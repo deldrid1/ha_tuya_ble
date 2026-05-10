@@ -102,6 +102,35 @@ class TuyaBLECategorySelectMapping:
 
 
 mapping: dict[str, TuyaBLECategorySelectMapping] = {
+    "dj": TuyaBLECategorySelectMapping(
+        products={
+            "0envtxjyq7wn7h6t": [
+                TuyaBLESelectMapping(
+                    dp_id=104,
+                    description=TemperatureUnitDescription(
+                        options=[
+                            UnitOfTemperature.CELSIUS,
+                            UnitOfTemperature.FAHRENHEIT,
+                        ],
+                    ),
+                ),
+                TuyaBLESelectMapping(
+                    dp_id=21,
+                    description=SelectEntityDescription(
+                        key="work_mode",
+                        options=[
+                            "hide",
+                            "bright",
+                            "temp",
+                            "countdown",
+                        ],
+                        entity_category=EntityCategory.CONFIG,
+                        entity_registry_enabled_default=False,
+                    ),
+                ),
+            ],
+        },
+    ),
     "co2bj": TuyaBLECategorySelectMapping(
         products={
             "59s19z5m":  # CO2 Detector

@@ -20,11 +20,18 @@ CONF_DEVICE_NAME: Final = "device_name"
 CONF_PRODUCT_MODEL: Final = "product_model"
 CONF_PRODUCT_NAME: Final = "product_name"
 
+CONF_APP_TYPE: Final = "app_type"
+CONF_AUTH_TYPE: Final = "auth_type"
 CONF_ENDPOINT = "endpoint"
 CONF_ACCESS_ID = "access_id"
 CONF_ACCESS_SECRET = "access_secret"
+CONF_DEVICE_IDS: Final = "device_ids"
+SMARTLIFE_APP: Final = "smartlife"
+TUYA_SMART_APP: Final = "tuyaSmart"
 
+TUYA_API_TOKEN_URL: Final = "/v1.0/token"
 TUYA_API_DEVICES_URL: Final = "/v1.0/users/%s/devices"
+TUYA_API_DEVICES_BY_IDS_URL: Final = "/v1.0/devices"
 TUYA_API_FACTORY_INFO_URL: Final = "/v1.0/iot-03/devices/factory-infos?device_ids=%s"
 TUYA_FACTORY_INFO_MAC: Final = "mac"
 

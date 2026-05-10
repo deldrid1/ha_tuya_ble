@@ -7,6 +7,7 @@ import pycountry
 from typing import Any
 
 import voluptuous as vol
+from tuya_iot import AuthType
 
 from homeassistant.config_entries import (
     ConfigEntry,
@@ -26,25 +27,28 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowHandler, FlowResult
 
-from homeassistant.components.tuya.const import (
-    CONF_ENDPOINT,
-    TUYA_RESPONSE_CODE,
-    TUYA_RESPONSE_MSG,
-    TUYA_RESPONSE_SUCCESS,
-)
-
 from .tuya_ble import SERVICE_UUID, TuyaBLEDeviceCredentials
 
 from .const import (
     DOMAIN,
+    CONF_APP_TYPE,
+    CONF_AUTH_TYPE,
     CONF_ACCESS_ID,
     CONF_ACCESS_SECRET,
+    CONF_DEVICE_IDS,
+    CONF_ENDPOINT,
+    SMARTLIFE_APP,
+    TUYA_SMART_APP,
     TUYA_COUNTRIES,
 )
 from .devices import TuyaBLEData, get_device_readable_name
 from .cloud import HASSTuyaBLEDeviceManager
 
 _LOGGER = logging.getLogger(__name__)
+
+TUYA_RESPONSE_CODE = "code"
+TUYA_RESPONSE_MSG = "msg"
+TUYA_RESPONSE_SUCCESS = "success"
 
 
 async def _try_login(
@@ -62,19 +66,43 @@ async def _try_login(
         if country.name == user_input[CONF_COUNTRY_CODE]
     ][0]
 
+    device_ids = user_input.get(CONF_DEVICE_IDS, "").strip()
+    username = user_input.get(CONF_USERNAME, "").strip()
+    password = user_input.get(CONF_PASSWORD, "")
+
+    if not device_ids and (not username or not password):
+        errors["base"] = "missing_credentials"
+        return None
+
     data = {
         CONF_ENDPOINT: country.endpoint,
         CONF_ACCESS_ID: user_input[CONF_ACCESS_ID],
         CONF_ACCESS_SECRET: user_input[CONF_ACCESS_SECRET],
-        CONF_USERNAME: user_input[CONF_USERNAME],
-        CONF_PASSWORD: user_input[CONF_PASSWORD],
         CONF_COUNTRY_CODE: country.country_code,
     }
+    if device_ids:
+        data[CONF_DEVICE_IDS] = device_ids
+    if username and password:
+        data[CONF_USERNAME] = username
+        data[CONF_PASSWORD] = password
 
-    response = await manager._login(data, True)
+    if username and password:
+        for app_type, auth_type in (
+            (TUYA_SMART_APP, AuthType.SMART_HOME),
+            (SMARTLIFE_APP, AuthType.SMART_HOME),
+            ("", AuthType.CUSTOM),
+        ):
+            data[CONF_APP_TYPE] = app_type
+            data[CONF_AUTH_TYPE] = auth_type
+            response = await manager._login(data, True)
 
-    if response.get(TUYA_RESPONSE_SUCCESS, False):
-        return data
+            if response and response.get(TUYA_RESPONSE_SUCCESS, False):
+                return data
+    else:
+        response = await manager._login(data, True)
+
+        if response and response.get(TUYA_RESPONSE_SUCCESS, False):
+            return data
 
     errors["base"] = "login_error"
     if response:
@@ -127,10 +155,14 @@ def _show_login_form(
                     CONF_ACCESS_SECRET,
                     default=user_input.get(CONF_ACCESS_SECRET, ""),
                 ): str,
-                vol.Required(
+                vol.Optional(
+                    CONF_DEVICE_IDS,
+                    default=user_input.get(CONF_DEVICE_IDS, ""),
+                ): str,
+                vol.Optional(
                     CONF_USERNAME, default=user_input.get(CONF_USERNAME, "")
                 ): str,
-                vol.Required(
+                vol.Optional(
                     CONF_PASSWORD, default=user_input.get(CONF_PASSWORD, "")
                 ): str,
             }

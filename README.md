@@ -4,21 +4,48 @@
 
 This integration supports Tuya devices connected via BLE.
 
-_Forked from [@PlusPlus-ua](https://github.com/PlusPlus-ua/ha_tuya_ble)_
+_Forked from [@PlusPlus-ua](https://github.com/PlusPlus-ua/ha_tuya_ble) and [@jbsky](https://github.com/jbsky/ha_tuya_ble)._
 
 ## Installation
 
 Place the `custom_components` folder in your configuration directory (or add its contents to an existing `custom_components` folder). Alternatively install via [HACS](https://hacs.xyz/).
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jbsky&repository=ha_tuya_ble&category=integration)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=deldrid1&repository=ha_tuya_ble&category=integration)
 
 ## Usage
 
 After adding to Home Assistant integration should discover all supported Bluetooth devices, or you can add discoverable devices manually.
 
-The integration works locally, but connection to Tuya BLE device requires device ID and encryption key from Tuya IOT cloud. It could be obtained using the same credentials as in official Tuya integration. To obtain the credentials, please refer to official Tuya integration [documentation](https://www.home-assistant.io/integrations/tuya/)
+The integration works locally, but connection to a Tuya BLE device requires the device ID and encryption key from Tuya IoT cloud. Almost all devices only need cloud access during setup.
+
+You can authorize setup in either of two ways:
+
+* Tuya app account mode: enter the IoT Access ID, IoT Access Secret, country, Tuya Smart or Smart Life account, and password.
+* IoT project device ID mode: enter the IoT Access ID, IoT Access Secret, country, and one or more comma-separated Tuya device IDs that are already authorized in the IoT project. Leave the app account and password blank.
+
+## Bluetooth proxy support
+
+Tuya BLE control requires an active BLE GATT connection. [Home Assistant's Bluetooth integration](https://www.home-assistant.io/integrations/bluetooth/#remote-adapters-bluetooth-proxies) supports active connections through local Bluetooth adapters and [ESPHome Bluetooth proxies](https://esphome.io/components/bluetooth_proxy/).
+
+Shelly Gen2+ Bluetooth proxy support is limited to advertisement listening and advertisement bundling, not active GATT connections. A Shelly device can help Home Assistant see Tuya BLE advertisements, but it cannot proxy the active connection needed to read or write Tuya BLE datapoints. Use an ESPHome Bluetooth proxy with active connections enabled, or a supported local Bluetooth adapter, for controllable Tuya BLE devices.
 
 ## Supported devices list
+
+* Backyard Discovery Sauna Heater (category_id 'dj')
+  + BYD Sauna Heater / product_id '0envtxjyq7wn7h6t'.
+  + Exposes a climate entity in Fahrenheit, power switch, light switch, timer number, current temperature sensors, countdown-left sensor, temperature-unit select, display-mode select, and a fault binary sensor.
+  + Known datapoints:
+    - 20 `switch_led`: heater power
+    - 21 `work_mode`: hidden app display mode (`hide`, `bright`, `temp`, `countdown`)
+    - 26 `countdown`: timer setpoint, 0-60 min, 5 min step
+    - 101 `countdown_left`: remaining timer minutes
+    - 102 `temp_set`: Celsius target, 0-90 C, 5 C step
+    - 103 `temp_current`: current Celsius temperature
+    - 104 `temp_unit_convert`: `c`/`f`
+    - 105 `temp_current_f`: current Fahrenheit temperature
+    - 106 `temp_set_f`: Fahrenheit target, 32-194 F, 9 F step
+    - 107 `fault`: bitmap (`f01` sensor contact fault, `f03` 125 C over-temperature alarm)
+    - 108 `brightness`: light switch
 
 * Fingerbots (category_id 'szjqr')
   + Fingerbot (product_ids 'ltak7e1p', 'y6kttvd6', 'yrnk7mnn', 'nvr2rocq', 'bnt7wajf', 'rvdceqjh', '5xhbk964'), original device, first in category, powered by CR2 battery.

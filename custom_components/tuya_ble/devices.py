@@ -174,6 +174,13 @@ class TuyaBLECategoryInfo:
 
 
 devices_database: dict[str, TuyaBLECategoryInfo] = {
+    "dj": TuyaBLECategoryInfo(
+        products={
+            "0envtxjyq7wn7h6t": TuyaBLEProductInfo(
+                name="Backyard Discovery Sauna Heater",
+            ),
+        },
+    ),
     "co2bj": TuyaBLECategoryInfo(
         products={
             "59s19z5m": TuyaBLEProductInfo(  # device product_id

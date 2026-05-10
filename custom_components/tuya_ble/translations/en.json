@@ -6,7 +6,8 @@
         "error": {
             "device_not_registered": "Device is not registered in Tuya cloud",
             "invalid_auth": "Invalid authentication",
-            "login_error": "Login error ({code}): {msg}"
+            "login_error": "Login error ({code}): {msg}",
+            "missing_credentials": "Enter either Tuya app account credentials or one or more Tuya device IDs"
         },
         "flow_title": "{name}",
         "step": {
@@ -21,15 +22,19 @@
                     "access_id": "Tuya IoT Access ID",
                     "access_secret": "Tuya IoT Access Secret",
                     "country_code": "Country",
+                    "device_ids": "Tuya device ID(s), comma-separated",
                     "password": "Password",
                     "username": "Account"
                 },
-                "description": "Tuya BLE requires obtaining encryption key from Tuya cloud. Almost all devices only need to access the cloud once during setup.\n\nRefer to documentation of Tuya integration to retrive the cloud credentials https://www.home-assistant.io/integrations/tuya/\n\nEnter your Tuya credentials."
+                "description": "Tuya BLE requires obtaining encryption key from Tuya cloud. Almost all devices only need to access the cloud once during setup.\n\nEnter Tuya app account credentials, or enter Tuya IoT Access ID/Secret plus comma-separated device ID(s) for devices already authorized in your IoT project."
             }
         }
     },
     "entity": {
         "binary_sensor": {
+            "fault": {
+                "name": "Fault"
+            },
             "low_battery": {
                 "name": "Battery"
             }
@@ -37,6 +42,11 @@
         "button": {
             "push": {
                 "name": "Push"
+            }
+        },
+        "climate": {
+            "sauna_heater": {
+                "name": "Sauna heater"
             }
         },
         "number": {
@@ -63,6 +73,9 @@
             },
             "hold_time": {
                 "name": "Hold time"
+            },
+            "sauna_timer": {
+                "name": "Sauna timer"
             },
             "program_idle_position": {
                 "name": "Idle position"
@@ -107,6 +120,15 @@
             },
             "temperature_unit": {
                 "name": "Temperature unit"
+            },
+            "work_mode": {
+                "name": "Display mode",
+                "state": {
+                    "bright": "Brightness",
+                    "countdown": "Countdown",
+                    "hide": "Hidden",
+                    "temp": "Temperature"
+                }
             }
         },
         "sensor": {
@@ -165,6 +187,15 @@
             },
             "time_left": {
                 "name": "Remaining irrigation time"
+            },
+            "countdown_left": {
+                "name": "Remaining sauna time"
+            },
+            "temp_current": {
+                "name": "Current temperature"
+            },
+            "temp_current_f": {
+                "name": "Current temperature"
             },
             "use_time": {
                 "name": "Accumulated use time"
@@ -225,6 +256,12 @@
             "reverse_positions": {
                 "name": "Reverse positions"
             },
+            "sauna_light": {
+                "name": "Sauna light"
+            },
+            "sauna_power": {
+                "name": "Sauna power"
+            },
             "switch": {
                 "name": "Switch"
             },
@@ -257,7 +294,8 @@
         "error": {
             "device_not_registered": "Device is not registered in Tuya cloud",
             "invalid_auth": "Invalid authentication",
-            "login_error": "Login error ({code}): {msg}"
+            "login_error": "Login error ({code}): {msg}",
+            "missing_credentials": "Enter either Tuya app account credentials or one or more Tuya device IDs"
         },
         "step": {
             "login": {
@@ -265,10 +303,11 @@
                     "access_id": "Tuya IoT Access ID",
                     "access_secret": "Tuya IoT Access Secret",
                     "country_code": "Country",
+                    "device_ids": "Tuya device ID(s), comma-separated",
                     "password": "Password",
                     "username": "Account"
                 },
-                "description": "Refer to documentation of Tuya integration to retrive the cloud credentials https://www.home-assistant.io/integrations/tuya/\n\nEnter your Tuya credentials."
+                "description": "Enter Tuya app account credentials, or enter Tuya IoT Access ID/Secret plus comma-separated device ID(s) for devices already authorized in your IoT project."
             }
         }
     }

@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
+
+## [0.2.5] - 2026-05-10
+
+### Added
+
+- Add Backyard Discovery Sauna Heater support for category `dj`, product ID `0envtxjyq7wn7h6t`.
+- Add IoT project device ID setup mode, which can retrieve device credentials with only an authorized IoT Access ID/Secret and known Tuya device ID(s).
+- Document the Shelly Bluetooth proxy limitation for controllable Tuya BLE devices.
+
+### Fixed
+
+- Restore Tuya Smart, Smart Life, and custom app authentication fallback for SDK logins.
+- Fix manual credential construction after adding `product_model`.
+
 ## [0.1.0] - 2023-04-22
 
 - Initial release

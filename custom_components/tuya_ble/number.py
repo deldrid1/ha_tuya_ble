@@ -216,6 +216,23 @@ class TuyaBLECategoryNumberMapping:
 
 
 mapping: dict[str, TuyaBLECategoryNumberMapping] = {
+    "dj": TuyaBLECategoryNumberMapping(
+        products={
+            "0envtxjyq7wn7h6t": [
+                TuyaBLENumberMapping(
+                    dp_id=26,
+                    description=NumberEntityDescription(
+                        key="sauna_timer",
+                        icon="mdi:timer",
+                        native_max_value=60,
+                        native_min_value=0,
+                        native_unit_of_measurement=UnitOfTime.MINUTES,
+                        native_step=5,
+                    ),
+                ),
+            ],
+        },
+    ),
     "co2bj": TuyaBLECategoryNumberMapping(
         products={
             "59s19z5m": [  # CO2 Detector

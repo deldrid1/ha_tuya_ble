@@ -126,6 +126,26 @@ class TuyaBLECategorySwitchMapping:
 
 
 mapping: dict[str, TuyaBLECategorySwitchMapping] = {
+    "dj": TuyaBLECategorySwitchMapping(
+        products={
+            "0envtxjyq7wn7h6t": [
+                TuyaBLESwitchMapping(
+                    dp_id=20,
+                    description=SwitchEntityDescription(
+                        key="sauna_power",
+                        icon="mdi:radiator",
+                    ),
+                ),
+                TuyaBLESwitchMapping(
+                    dp_id=108,
+                    description=SwitchEntityDescription(
+                        key="sauna_light",
+                        icon="mdi:lightbulb",
+                    ),
+                ),
+            ],
+        },
+    ),
     "co2bj": TuyaBLECategorySwitchMapping(
         products={
             "59s19z5m": [  # CO2 Detector

@@ -66,6 +66,26 @@ class TuyaBLECategoryClimateMapping:
 
 
 mapping: dict[str, TuyaBLECategoryClimateMapping] = {
+    "dj": TuyaBLECategoryClimateMapping(
+        products={
+            "0envtxjyq7wn7h6t": [
+                TuyaBLEClimateMapping(
+                    description=ClimateEntityDescription(
+                        key="sauna_heater",
+                    ),
+                    hvac_switch_dp_id=20,
+                    hvac_switch_mode=HVACMode.HEAT,
+                    hvac_modes=[HVACMode.OFF, HVACMode.HEAT],
+                    temperature_unit=UnitOfTemperature.FAHRENHEIT,
+                    current_temperature_dp_id=105,
+                    target_temperature_dp_id=106,
+                    target_temperature_min=32.0,
+                    target_temperature_max=194.0,
+                    target_temperature_step=9.0,
+                ),
+            ],
+        },
+    ),
     "wk": TuyaBLECategoryClimateMapping(
         products={
             **dict.fromkeys(
