@@ -33,7 +33,8 @@ Shelly Gen2+ Bluetooth proxy support is limited to advertisement listening and a
 
 * Backyard Discovery Sauna Heater (category_id 'dj')
   + BYD Sauna Heater / product_id '0envtxjyq7wn7h6t'.
-  + Exposes a climate entity in Fahrenheit, power switch, light switch, timer number, current temperature sensors, countdown-left sensor, temperature-unit select, display-mode select, a fault binary sensor, and a disabled-by-default BLE signal-strength diagnostic sensor.
+  + Exposes a climate entity in Fahrenheit, controls power switch, timer number, current temperature sensors, countdown-left sensor, temperature-unit select, display-mode select, a fault binary sensor, and a disabled-by-default BLE signal-strength diagnostic sensor. The unwired light output is intentionally not exposed.
+  + The climate entity reports `heat` only while the timer is active. Setting the climate mode to `heat` starts a 60 minute timer; setting it to `off` clears the timer.
   + Known datapoints:
     - 20 `switch_led`: heater power
     - 21 `work_mode`: hidden app display mode (`hide`, `bright`, `temp`, `countdown`)
@@ -45,7 +46,7 @@ Shelly Gen2+ Bluetooth proxy support is limited to advertisement listening and a
     - 105 `temp_current_f`: current Fahrenheit temperature
     - 106 `temp_set_f`: Fahrenheit target, 32-194 F, 9 F step
     - 107 `fault`: bitmap (`f01` sensor contact fault, `f03` 125 C over-temperature alarm)
-    - 108 `brightness`: light switch
+    - 108 `brightness`: unwired light output, intentionally not exposed
 
 * Fingerbots (category_id 'szjqr')
   + Fingerbot (product_ids 'ltak7e1p', 'y6kttvd6', 'yrnk7mnn', 'nvr2rocq', 'bnt7wajf', 'rvdceqjh', '5xhbk964'), original device, first in category, powered by CR2 battery.

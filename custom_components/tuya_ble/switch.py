@@ -132,15 +132,8 @@ mapping: dict[str, TuyaBLECategorySwitchMapping] = {
                 TuyaBLESwitchMapping(
                     dp_id=20,
                     description=SwitchEntityDescription(
-                        key="sauna_power",
-                        icon="mdi:radiator",
-                    ),
-                ),
-                TuyaBLESwitchMapping(
-                    dp_id=108,
-                    description=SwitchEntityDescription(
-                        key="sauna_light",
-                        icon="mdi:lightbulb",
+                        key="sauna_controls",
+                        icon="mdi:power",
                     ),
                 ),
             ],

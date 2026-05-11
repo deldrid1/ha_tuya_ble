@@ -265,11 +265,8 @@
             "reverse_positions": {
                 "name": "Reverse positions"
             },
-            "sauna_light": {
-                "name": "Sauna light"
-            },
-            "sauna_power": {
-                "name": "Sauna power"
+            "sauna_controls": {
+                "name": "Sauna controls"
             },
             "switch": {
                 "name": "Switch"

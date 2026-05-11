@@ -274,11 +274,8 @@
       "lock_motor_state": {
           "name": "Motor State"
       },            
-      "sauna_light": {
-          "name": "Sauna light"
-      },
-      "sauna_power": {
-          "name": "Sauna power"
+      "sauna_controls": {
+        "name": "Sauna controls"
       },
       "water_valve": {
           "name": "Irrigation valve"

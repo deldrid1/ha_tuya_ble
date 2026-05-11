@@ -39,6 +39,8 @@ class TuyaBLEClimateMapping:
 
     hvac_switch_dp_id: int = 0
     hvac_switch_mode: HVACMode | None = None
+    heat_timer_dp_id: int = 0
+    heat_timer_default: int = 60
 
     preset_mode_dp_ids: dict[str, int] | None = None
 
@@ -73,8 +75,8 @@ mapping: dict[str, TuyaBLECategoryClimateMapping] = {
                     description=ClimateEntityDescription(
                         key="sauna_heater",
                     ),
-                    hvac_switch_dp_id=20,
-                    hvac_switch_mode=HVACMode.HEAT,
+                    heat_timer_dp_id=26,
+                    heat_timer_default=60,
                     hvac_modes=[HVACMode.OFF, HVACMode.HEAT],
                     temperature_unit=UnitOfTemperature.FAHRENHEIT,
                     current_temperature_dp_id=105,
@@ -183,7 +185,12 @@ class TuyaBLEClimate(TuyaBLEEntity, ClimateEntity):
         self._attr_preset_mode = PRESET_NONE
         self._attr_hvac_action = HVACAction.HEATING
 
-        if mapping.hvac_mode_dp_id and mapping.hvac_modes:
+        if mapping.heat_timer_dp_id:
+            self._attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT]
+            self._attr_supported_features |= (
+                ClimateEntityFeature.TURN_ON | ClimateEntityFeature.TURN_OFF
+            )
+        elif mapping.hvac_mode_dp_id and mapping.hvac_modes:
             self._attr_hvac_modes = mapping.hvac_modes
         elif mapping.hvac_switch_dp_id and mapping.hvac_switch_mode:
             self._attr_hvac_modes = [HVACMode.OFF, mapping.hvac_switch_mode]
@@ -236,7 +243,14 @@ class TuyaBLEClimate(TuyaBLEEntity, ClimateEntity):
                     datapoint.value / self._mapping.target_humidity_coefficient
                 )
 
-        if self._mapping.hvac_mode_dp_id != 0 and self._mapping.hvac_modes:
+        if self._mapping.heat_timer_dp_id != 0:
+            datapoint = self._device.datapoints[self._mapping.heat_timer_dp_id]
+            timer_active = bool(datapoint and datapoint.value)
+            self._attr_hvac_mode = HVACMode.HEAT if timer_active else HVACMode.OFF
+            self._attr_hvac_action = (
+                HVACAction.HEATING if timer_active else HVACAction.OFF
+            )
+        elif self._mapping.hvac_mode_dp_id != 0 and self._mapping.hvac_modes:
             datapoint = self._device.datapoints[self._mapping.hvac_mode_dp_id]
             if datapoint:
                 self._attr_hvac_mode = (
@@ -259,6 +273,10 @@ class TuyaBLEClimate(TuyaBLEEntity, ClimateEntity):
                     current_preset_mode = preset_mode
                     break
             self._attr_preset_mode = current_preset_mode
+
+        if self._mapping.heat_timer_dp_id != 0:
+            self.async_write_ha_state()
+            return
 
         try:
             if (
@@ -302,7 +320,20 @@ class TuyaBLEClimate(TuyaBLEEntity, ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set new target hvac mode."""
-        if (
+        if self._mapping.heat_timer_dp_id != 0:
+            int_value = (
+                self._mapping.heat_timer_default
+                if hvac_mode == HVACMode.HEAT
+                else 0
+            )
+            datapoint = self._device.datapoints.get_or_create(
+                self._mapping.heat_timer_dp_id,
+                TuyaBLEDataPointType.DT_VALUE,
+                int_value,
+            )
+            if datapoint:
+                self._hass.create_task(datapoint.set_value(int_value))
+        elif (
             self._mapping.hvac_mode_dp_id != 0
             and self._mapping.hvac_modes
             and hvac_mode in self._mapping.hvac_modes
@@ -324,6 +355,14 @@ class TuyaBLEClimate(TuyaBLEEntity, ClimateEntity):
             )
             if datapoint:
                 self._hass.create_task(datapoint.set_value(bool_value))
+
+    async def async_turn_on(self) -> None:
+        """Turn on the climate device."""
+        await self.async_set_hvac_mode(HVACMode.HEAT)
+
+    async def async_turn_off(self) -> None:
+        """Turn off the climate device."""
+        await self.async_set_hvac_mode(HVACMode.OFF)
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
