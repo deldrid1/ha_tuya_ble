@@ -230,6 +230,18 @@ mapping: dict[str, TuyaBLECategoryNumberMapping] = {
                         native_step=5,
                     ),
                 ),
+                TuyaBLENumberMapping(
+                    dp_id=106,
+                    description=NumberEntityDescription(
+                        key="sauna_set_temperature",
+                        device_class=NumberDeviceClass.TEMPERATURE,
+                        native_max_value=194,
+                        native_min_value=32,
+                        native_unit_of_measurement=UnitOfTemperature.FAHRENHEIT,
+                        native_step=9,
+                    ),
+                    mode=NumberMode.SLIDER,
+                ),
             ],
         },
     ),

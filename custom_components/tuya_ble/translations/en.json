@@ -77,6 +77,9 @@
             "sauna_timer": {
                 "name": "Sauna timer"
             },
+            "sauna_set_temperature": {
+                "name": "Setpoint temperature"
+            },
             "program_idle_position": {
                 "name": "Idle position"
             },
@@ -196,6 +199,12 @@
             },
             "temp_current_f": {
                 "name": "Current temperature"
+            },
+            "temp_set": {
+                "name": "Setpoint temperature"
+            },
+            "temp_set_f": {
+                "name": "Setpoint temperature"
             },
             "use_time": {
                 "name": "Accumulated use time"

@@ -145,6 +145,25 @@ mapping: dict[str, TuyaBLECategorySensorMapping] = {
                     ),
                 ),
                 TuyaBLESensorMapping(
+                    dp_id=106,
+                    description=SensorEntityDescription(
+                        key="temp_set_f",
+                        device_class=SensorDeviceClass.TEMPERATURE,
+                        native_unit_of_measurement=UnitOfTemperature.FAHRENHEIT,
+                        state_class=SensorStateClass.MEASUREMENT,
+                    ),
+                ),
+                TuyaBLESensorMapping(
+                    dp_id=102,
+                    description=SensorEntityDescription(
+                        key="temp_set",
+                        device_class=SensorDeviceClass.TEMPERATURE,
+                        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+                        state_class=SensorStateClass.MEASUREMENT,
+                        entity_registry_enabled_default=False,
+                    ),
+                ),
+                TuyaBLESensorMapping(
                     dp_id=101,
                     description=SensorEntityDescription(
                         key="countdown_left",
