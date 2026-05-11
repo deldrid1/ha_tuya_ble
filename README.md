@@ -33,7 +33,7 @@ Shelly Gen2+ Bluetooth proxy support is limited to advertisement listening and a
 
 * Backyard Discovery Sauna Heater (category_id 'dj')
   + BYD Sauna Heater / product_id '0envtxjyq7wn7h6t'.
-  + Exposes a climate entity in Fahrenheit, power switch, light switch, timer number, current temperature sensors, countdown-left sensor, temperature-unit select, display-mode select, and a fault binary sensor.
+  + Exposes a climate entity in Fahrenheit, power switch, light switch, timer number, current temperature sensors, countdown-left sensor, temperature-unit select, display-mode select, a fault binary sensor, and a disabled-by-default BLE signal-strength diagnostic sensor.
   + Known datapoints:
     - 20 `switch_led`: heater power
     - 21 `work_mode`: hidden app display mode (`hide`, `bright`, `temp`, `countdown`)
