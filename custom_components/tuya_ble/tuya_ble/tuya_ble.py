@@ -28,6 +28,8 @@ from .const import (
     MANUFACTURER_DATA_ID,
     RESPONSE_WAIT_TIMEOUT,
     SERVICE_UUID,
+    SERVICE_UUID_FD50,
+    SERVICE_UUIDS,
     TuyaBLECode,
     TuyaBLEDataPointType,
 )
@@ -311,9 +313,17 @@ class TuyaBLEDevice:
         raw_uuid: bytes | None = None
         if self._advertisement_data:
             if self._advertisement_data.service_data:
-                service_data = self._advertisement_data.service_data.get(
-                    SERVICE_UUID)
+                service_data = next(
+                    (
+                        self._advertisement_data.service_data.get(service_uuid)
+                        for service_uuid in SERVICE_UUIDS
+                        if service_uuid in self._advertisement_data.service_data
+                    ),
+                    None,
+                )
                 if service_data and len(service_data) > 1:
+                    if service_data[0:4] == b"\x43\x04\x00\x10":
+                        raw_product_id = service_data[4:]
                     match service_data[0]:
                         case 0:
                             raw_product_id = service_data[1:]

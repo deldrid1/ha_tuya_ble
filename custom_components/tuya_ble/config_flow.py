@@ -27,7 +27,7 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowHandler, FlowResult
 
-from .tuya_ble import SERVICE_UUID, TuyaBLEDeviceCredentials
+from .tuya_ble import SERVICE_UUIDS, TuyaBLEDeviceCredentials
 
 from .const import (
     DOMAIN,
@@ -337,7 +337,10 @@ class TuyaBLEConfigFlow(ConfigFlow, domain=DOMAIN):
                     discovery.address in current_addresses
                     or discovery.address in self._discovered_devices
                     or discovery.service_data is None
-                    or not SERVICE_UUID in discovery.service_data.keys()
+                    or not any(
+                        service_uuid in discovery.service_data
+                        for service_uuid in SERVICE_UUIDS
+                    )
                 ):
                     continue
                 self._discovered_devices[discovery.address] = discovery
