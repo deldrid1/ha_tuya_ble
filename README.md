@@ -29,7 +29,7 @@ Tuya BLE control requires an active BLE GATT connection. [Home Assistant's Bluet
 
 Shelly Gen2+ Bluetooth proxy support is limited to advertisement listening and advertisement bundling, not active GATT connections. A Shelly device can help Home Assistant see Tuya BLE advertisements, but it cannot proxy the active connection needed to read or write Tuya BLE datapoints. Use an ESPHome Bluetooth proxy with active connections enabled, or a supported local Bluetooth adapter, for controllable Tuya BLE devices.
 
-Some Wi-Fi + Bluetooth Tuya combo modules only advertise their Tuya Bluetooth service while they are in pairing mode or Wi-Fi fallback mode. This fork listens for both the older `0000a201-0000-1000-8000-00805f9b34fb` service and the newer TuyaOS `0000fd50-0000-1000-8000-00805f9b34fb` advertising service.
+Some Wi-Fi + Bluetooth Tuya combo modules only advertise their Tuya Bluetooth service while they are in pairing mode or Wi-Fi fallback mode. This fork listens for both the older `0000a201-0000-1000-8000-00805f9b34fb` service and the newer TuyaOS `0000fd50-0000-1000-8000-00805f9b34fb` advertising service. FD50 devices use TuyaOS GATT characteristics `00000002-0000-1001-8001-00805f9b07d0` for notifications and `00000001-0000-1001-8001-00805f9b07d0` for writes.
 
 ## Supported devices list
 

@@ -23,7 +23,9 @@ from Crypto.Cipher import AES
 
 from .const import (
     CHARACTERISTIC_NOTIFY,
+    CHARACTERISTIC_NOTIFY_FD50,
     CHARACTERISTIC_WRITE,
+    CHARACTERISTIC_WRITE_FD50,
     GATT_MTU,
     MANUFACTURER_DATA_ID,
     RESPONSE_WAIT_TIMEOUT,
@@ -222,6 +224,7 @@ class TuyaBLEDevice:
         self._device_info: TuyaBLEDeviceCredentials | None = None
         self._ble_device = ble_device
         self._advertisement_data = advertisement_data
+        self._active_service_uuid: str | None = None
         self._operation_lock = asyncio.Lock()
         self._connect_lock = asyncio.Lock()
         self._client: BleakClientWithServiceCache | None = None
@@ -264,6 +267,19 @@ class TuyaBLEDevice:
         """Set the ble device."""
         self._ble_device = ble_device
         self._advertisement_data = advertisement_data
+        self._decode_advertisement_data()
+
+    @property
+    def _notify_characteristic(self) -> str:
+        if self._active_service_uuid == SERVICE_UUID_FD50:
+            return CHARACTERISTIC_NOTIFY_FD50
+        return CHARACTERISTIC_NOTIFY
+
+    @property
+    def _write_characteristic(self) -> str:
+        if self._active_service_uuid == SERVICE_UUID_FD50:
+            return CHARACTERISTIC_WRITE_FD50
+        return CHARACTERISTIC_WRITE
 
     async def initialize(self) -> None:
         _LOGGER.debug("%s: Initializing", self.address)
@@ -313,6 +329,14 @@ class TuyaBLEDevice:
         raw_uuid: bytes | None = None
         if self._advertisement_data:
             if self._advertisement_data.service_data:
+                self._active_service_uuid = next(
+                    (
+                        service_uuid
+                        for service_uuid in SERVICE_UUIDS
+                        if service_uuid in self._advertisement_data.service_data
+                    ),
+                    self._active_service_uuid,
+                )
                 service_data = next(
                     (
                         self._advertisement_data.service_data.get(service_uuid)
@@ -542,7 +566,7 @@ class TuyaBLEDevice:
             self._expected_disconnect = True
             self._client = None
             if client and client.is_connected:
-                await client.stop_notify(CHARACTERISTIC_NOTIFY)
+                await client.stop_notify(self._notify_characteristic)
                 await client.disconnect()
         async with self._seq_num_lock:
             self._current_seq_num = 1
@@ -613,7 +637,7 @@ class TuyaBLEDevice:
                     self._client = client
                     try:
                         await self._client.start_notify(
-                            CHARACTERISTIC_NOTIFY, self._notification_handler
+                            self._notify_characteristic, self._notification_handler
                         )
                     except:  # [BLEAK_EXCEPTIONS, BleakNotFoundError]:
                         self._client = None
@@ -958,7 +982,7 @@ class TuyaBLEDevice:
                 try:
                     # _LOGGER.debug("%s: Sending packet: %s", self.address, packet.hex())
                     await self._client.write_gatt_char(
-                        CHARACTERISTIC_WRITE,
+                        self._write_characteristic,
                         packet,
                         False,
                     )
